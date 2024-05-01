@@ -20,7 +20,7 @@ const Create = () => {
     //   window.location.href = "/login";
     //   return;
     // }
-    if (!title || !method || !rating) {
+    if (!title.trim() || !method.trim() || !rating.trim()) {
       setFormError("Please fill all the fields");
       return;
     }
