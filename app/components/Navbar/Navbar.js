@@ -1,4 +1,5 @@
 // import Image from 'next/image'
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -11,6 +12,7 @@ function Navbar() {
             <span>
               {" "}
               <img
+                alt="new"
                 src="https://media.tenor.com/5OtR9QMc2wEAAAAi/dancing-its-time-to-party.gif"
                 className="h-10"
               />{" "}

@@ -26,6 +26,7 @@ function LogIn() {
       window.location.href = "/";
       setLoading(false);
       setSuccessMessage("Successfully logged in");
+      console.log(user);
     } catch (error) {
       setFormError(error.message);
       console.log(error);
@@ -65,7 +66,7 @@ function LogIn() {
           </p>
         )}
         {successMessage && (
-          <p className="text-black bg-[green] text-center mx-24 rounded-xl">
+          <p className="text-black text-sm bg-[green] text-center mx-24 rounded-xl">
             {successMessage}
           </p>
         )}
