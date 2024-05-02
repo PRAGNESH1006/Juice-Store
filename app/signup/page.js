@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import supabase from "@/app/supabase/supabaseClient";
 import Link from "next/link";
-import {Auth,ThemeSupa} from '@supabase/auth-ui-react'
+// import {Auth,ThemeSupa} from '@supabase/auth-ui-react'
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -87,10 +87,9 @@ const SignUp = () => {
         >
           {"Google"}
         </button>
-        <Auth
+
         {formError && (
           <p className="text-black text-sm font-bold bg-[red] text-center mx-24 rounded-xl">
-            {" "}
             {formError}
           </p>
         )}
