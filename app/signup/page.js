@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import supabase from "@/app/supabase/supabaseClient";
 import Link from "next/link";
+import {Auth,ThemeSupa} from '@supabase/auth-ui-react'
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -84,9 +85,9 @@ const SignUp = () => {
           onClick={GoogleAuth}
           className="mx-6 px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-10"
         >
-          {" "}
-          {loading ? "Loading..." : "Google"}
+          {"Google"}
         </button>
+        <Auth
         {formError && (
           <p className="text-black text-sm font-bold bg-[red] text-center mx-24 rounded-xl">
             {" "}

@@ -5,11 +5,15 @@ import Link from "next/link";
 export default function Home() {
   const [fetchError, setFetchError] = useState(null);
   const [smoothies, setSmoothies] = useState(null);
+  const [orderBy, setOrderBy] = useState("created_at");
 
   useEffect(() => {
     //fatching smppthies
     const fetchData = async () => {
-      const { data, error } = await supabase.from("smoothies").select();
+      const { data, error } = await supabase
+        .from("smoothies")
+        .select()
+        .order(orderBy, { ascending: false });
 
       if (error) {
         setFetchError("could not fetch smoothies data");
@@ -23,7 +27,7 @@ export default function Home() {
       }
     };
     fetchData();
-  }, []);
+  }, [orderBy]);
 
   // deleting smoothies
   const handleDelete = async (id) => {
@@ -52,8 +56,40 @@ export default function Home() {
   };
 
   return (
-    <div className="flex items-center justify-center flex-col  gap-4 ">
-      <p className="text-2xl mt-4">All Smoothies data Created by other users</p>
+    <div className="flex items-center justify-center flex-col  gap-4 py-2 ">
+      <div className="flex justify-evenly gap-2 items-center">
+        <p>Order By:</p>
+        <button
+          onClick={() => setOrderBy("created_at")}
+          className={`${
+            orderBy === "created_at"
+              ? "px-2 py-2 bg-[#8ea3a1] text-black rounded-lg h-10"
+              : "px-2 py-2 bg-[#373d3d] text-black rounded-lg h-10"
+          }`}
+        >
+          Time Created
+        </button>
+        <button
+          onClick={() => setOrderBy("rating")}
+          className={`${
+            orderBy === "rating"
+              ? "px-2 py-2 bg-[#8ea3a1] text-black rounded-lg h-10"
+              : "px-2 py-2 bg-[#373d3d] text-black rounded-lg h-10"
+          }`}
+        >
+          Rating
+        </button>
+        <button
+          onClick={() => setOrderBy("title")}
+          className={`${
+            orderBy === "title"
+              ? "px-2 py-2 bg-[#8ea3a1] text-black rounded-lg h-10"
+              : "px-2 py-2 bg-[#373d3d] text-black rounded-lg h-10"
+          }`}
+        >
+          Title
+        </button>
+      </div>
       {fetchError && <p>{fetchError}</p>}
       {smoothies && (
         <div className=" mx-10 ">
