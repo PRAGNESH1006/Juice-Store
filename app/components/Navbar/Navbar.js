@@ -20,6 +20,7 @@ function Navbar() {
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
+    console.log("signOut");
   };
 
   return (
