@@ -5,6 +5,7 @@ import Link from "next/link";
 export default function Home() {
   const [fetchError, setFetchError] = useState(null);
   const [smoothies, setSmoothies] = useState(null);
+  const [newUser, setNewUser] = useState(null);
   const [orderBy, setOrderBy] = useState("created_at");
 
   useEffect(() => {
@@ -24,10 +25,17 @@ export default function Home() {
       if (data) {
         setSmoothies(data);
         setFetchError(null);
-        console.log(data);
       }
     };
     fetchData();
+
+    const newsession = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setNewUser(user);
+    };
+    newsession();
   }, [orderBy]);
 
   // deleting smoothies
