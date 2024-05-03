@@ -4,10 +4,10 @@ import supabase from "@/app/supabase/supabaseClient";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 function Navbar() {
-  const [newUser, setNewUser] = useState(null);
+  const [newUser, setNewUser] = useStatee(null);
 
   async function signOut() {
     const { error } = await supabase.auth.signOut();
