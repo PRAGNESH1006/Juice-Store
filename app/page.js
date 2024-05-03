@@ -27,6 +27,13 @@ export default function Home() {
       }
     };
     fetchData();
+    const newsession = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      console.log(user);
+    };
+    newsession();
   }, [orderBy]);
 
   // deleting smoothies
