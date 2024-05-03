@@ -7,6 +7,7 @@ function Page() {
   const { id } = useParams();
   const [title, setTitle] = useState("");
   const [method, setMethod] = useState("");
+  const [ingredient, setIngredient] = useState("");
   const [rating, setRating] = useState("");
   const [formError, setFormError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,7 @@ function Page() {
         setTitle(data.title);
         setMethod(data.method);
         setRating(data.rating);
+        setIngredient(data.ingredient);
         console.log(data);
       } catch (error) {
         setFormError("Not found Data");
@@ -37,7 +39,7 @@ function Page() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title.trim() || !method.trim() || !rating) {
+    if (!title.trim() || !method.trim() || !rating || !ingredient.trim()) {
       setFormError("Please fill all the fields");
       return;
     }
@@ -52,6 +54,7 @@ function Page() {
             title,
             method,
             rating,
+            ingredient,
           },
         ])
         .eq("id", id)
@@ -74,26 +77,34 @@ function Page() {
   };
 
   return (
-    <div className=" flex flex-col gap-2 justify-center items-center ">
+    <div className=" flex flex-col  gap-2 justify-center items-center ">
       <form
         onSubmit={handleSubmit}
-        value={id}
-        className="h-[60vh] my-10 flex flex-col gap-2 justify-center  w-[400px] rounded-lg px-4 py-4  bg-[#102632] "
+        className="h-[70vh]   flex flex-col gap-2 justify-center  w-[400px] rounded-lg px-4  py-4 my-4  bg-[#102632] "
       >
         <label htmlFor="title">Title:</label>
         <input
           type="text"
           id="title"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-10"
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
+          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-8"
+        />
+        <label htmlFor="method">Ingredients:</label>
+        <textarea
+          id="Ingredients"
+          value={ingredient}
+          onChange={(e) => setIngredient(e.target.value)}
+          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-16"
         />
         <label htmlFor="method">Method:</label>
         <textarea
           id="method"
           value={method}
           onChange={(e) => setMethod(e.target.value)}
-          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-20"
+          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-16"
         />
         <label htmlFor="rating">Ratting(0-10):</label>
         <input
@@ -104,10 +115,10 @@ function Page() {
           min={0}
           onChange={handleChange}
           placeholder="Enter a number up to 10"
-          className="bg-[#92a9a7] text-black rounded-lg h-10  text-center"
+          className="bg-[#92a9a7] text-black rounded-lg h-8  text-center"
         />
-        <button className="bg-[#92a9a7] text-black rounded-lg h-10 ">
-          {loading ? "Loading..." : "Update Smoothie"}
+        <button className="mx-auto px-2 bg-[#92a9a7] text-black rounded-lg h-8 ">
+          {loading ? "Loading..." : "Create Smoothie"}
         </button>
 
         {formError && (

@@ -102,9 +102,16 @@ export default function Home() {
                 <h2 className="text-[1.5rem] text-center w-full h-[50px] bg-[#92a9a7] text-[#201a0e] rounded-lg pt-2">
                   {item.title}
                 </h2>
-                <h3 className="pt-2 px-2 h-[200px] overflow-auto ">
-                  {item.method}
-                </h3>
+                <div className="pt-2 px-2 h-[200px] overflow-auto ">
+                  <h3>
+                    <span className="text-[#6d15df]">Ingredients: </span>
+                    {item.ingredient}
+                  </h3>
+                  <h3>
+                    <span className="text-[#6d15df]">Method: </span>
+                    {item.method}
+                  </h3>
+                </div>
 
                 <div className="flex justify-center items-center absolute top-[-10px] right-[-10px] bg-[#6d15df] rounded-[6px] w-[30px] h-0  text-center p-[20px]  ">
                   {item.rating}

@@ -1,23 +1,20 @@
 "use client";
 import { useState } from "react";
-// import { useSession } from "next-auth/react";
 import supabase from "@/app/supabase/supabaseClient";
-// import { useRouter } from "next/router";
-// import { BrowserRouter as Router } from 'react-router-dom';
+
 const Create = () => {
-  // const { data: session } = useSession();
   const [title, setTitle] = useState("");
   const [method, setMethod] = useState("");
   const [rating, setRating] = useState("");
+  const [ingredient, setIngredient] = useState("");
   const [formError, setFormError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
-  // const navigate = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title.trim() || !method.trim() || !rating.trim()) {
+    if (!title.trim() || !method.trim() || !rating) {
       setFormError("Please fill all the fields");
       return;
     }
@@ -32,13 +29,13 @@ const Create = () => {
             title,
             method,
             rating,
+            ingredient,
           },
         ])
         .select();
-
+      window.location.href = "/";
       setLoading(false);
       setSuccessMessage("Successfully added smoothies");
-      window.location.href = "/";
     } catch (error) {
       setFormError(error.message);
       console.log(error);
@@ -53,10 +50,10 @@ const Create = () => {
   };
 
   return (
-    <div className=" flex flex-col gap-2 justify-center items-center ">
+    <div className=" flex flex-col  gap-2 justify-center items-center ">
       <form
         onSubmit={handleSubmit}
-        className="h-[60vh] my-10 flex flex-col gap-2 justify-center  w-[400px] rounded-lg px-4 py-4  bg-[#102632] "
+        className="h-[70vh]   flex flex-col gap-2 justify-center  w-[400px] rounded-lg px-4  py-4 my-4  bg-[#102632] "
       >
         <label htmlFor="title">Title:</label>
         <input
@@ -66,14 +63,21 @@ const Create = () => {
           onChange={(e) => {
             setTitle(e.target.value);
           }}
-          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-10"
+          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-8"
+        />
+        <label htmlFor="method">Ingredients:</label>
+        <textarea
+          id="Ingredients"
+          value={ingredient}
+          onChange={(e) => setIngredient(e.target.value)}
+          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-16"
         />
         <label htmlFor="method">Method:</label>
         <textarea
           id="method"
           value={method}
           onChange={(e) => setMethod(e.target.value)}
-          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-20"
+          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-16"
         />
         <label htmlFor="rating">Ratting(0-10):</label>
         <input
@@ -84,9 +88,9 @@ const Create = () => {
           min={0}
           onChange={handleChange}
           placeholder="Enter a number up to 10"
-          className="bg-[#92a9a7] text-black rounded-lg h-10  text-center"
+          className="bg-[#92a9a7] text-black rounded-lg h-8  text-center"
         />
-        <button className="bg-[#92a9a7] text-black rounded-lg h-10 ">
+        <button className="mx-auto px-2 bg-[#92a9a7] text-black rounded-lg h-8 ">
           {loading ? "Loading..." : "Create Smoothie"}
         </button>
 
