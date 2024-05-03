@@ -18,8 +18,8 @@ function Navbar() {
     newsession();
   }, []);
 
-  const signOut = () => {
-    console.log("sign out");
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
   };
 
   return (
