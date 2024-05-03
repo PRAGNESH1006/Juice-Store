@@ -63,8 +63,8 @@ export default function Home() {
           onClick={() => setOrderBy("created_at")}
           className={`${
             orderBy === "created_at"
-              ? "px-2 py-2 bg-[#8ea3a1] text-black rounded-lg h-10"
-              : "px-2 py-2 bg-[#373d3d] text-black rounded-lg h-10"
+              ? "px-2 py-2 bg-[#373d7d] hover:bg-[#373d7d] text-black rounded-lg h-10"
+              : "px-2 py-2 bg-[#8ea3a1] hover:bg-[#373d7d] text-black rounded-lg h-10"
           }`}
         >
           Time Created
@@ -73,8 +73,8 @@ export default function Home() {
           onClick={() => setOrderBy("rating")}
           className={`${
             orderBy === "rating"
-              ? "px-2 py-2 bg-[#8ea3a1] text-black rounded-lg h-10"
-              : "px-2 py-2 bg-[#373d3d] text-black rounded-lg h-10"
+              ? "px-2 py-2 bg-[#373d7d] hover:bg-[#373d7d] text-black rounded-lg h-10"
+              : "px-2 py-2 bg-[#8ea3a1] hover:bg-[#373d7d] text-black rounded-lg h-10"
           }`}
         >
           Rating
@@ -83,8 +83,8 @@ export default function Home() {
           onClick={() => setOrderBy("title")}
           className={`${
             orderBy === "title"
-              ? "px-2 py-2 bg-[#8ea3a1] text-black rounded-lg h-10"
-              : "px-2 py-2 bg-[#373d3d] text-black rounded-lg h-10"
+              ? "px-2 py-2 bg-[#373d7d] hover:bg-[#373d7d] text-black rounded-lg h-10"
+              : "px-2 py-2 bg-[#8ea3a1] hover:bg-[#373d7d] text-black rounded-lg h-10"
           }`}
         >
           Title
