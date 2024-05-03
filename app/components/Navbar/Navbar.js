@@ -10,6 +10,7 @@ function Navbar() {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.log(error);
+      console.log(error.message);
     }
   }
 

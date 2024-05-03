@@ -35,7 +35,7 @@ function LogIn() {
     },
   };
   return (
-    <div className=" flex justify-center items-center  ">
+    <div className=" com flex justify-center items-center  ">
       <Auth
         appearance={{
           theme: ThemeSupa,
