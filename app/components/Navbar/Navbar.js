@@ -23,6 +23,7 @@ function Navbar() {
         data: { user },
       } = await supabase.auth.getUser();
       setNewUser(user);
+      console.log(user);
     };
     newsession();
   }, []);
