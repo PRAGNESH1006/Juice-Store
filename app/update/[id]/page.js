@@ -118,7 +118,7 @@ function Page() {
           className="bg-[#92a9a7] text-black rounded-lg h-8  text-center"
         />
         <button className="mx-auto px-2 bg-[#92a9a7] text-black rounded-lg h-8 ">
-          {loading ? "Loading..." : "Create Smoothie"}
+          {loading ? "Loading..." : "Update Smoothie"}
         </button>
 
         {formError && (
