@@ -5,8 +5,18 @@ import {
   // Import predefined theme
   ThemeSupa,
 } from "@supabase/auth-ui-shared";
+import { useEffect } from "react";
 
 function LogIn() {
+  useEffect(() => {
+    const newsession = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      console.log(user);
+    };
+    newsession();
+  }, []);
   const customTheme = {
     default: {
       colors: {

@@ -3,16 +3,24 @@
 import supabase from "@/app/supabase/supabaseClient";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 function Navbar() {
-  async function signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.log(error);
-      console.log(error.message);
-    }
-  }
+  const [newUser, setNewUser] = useState(null);
+
+  useEffect(() => {
+    const newsession = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setNewUser(user);
+    };
+    newsession();
+  }, []);
+
+  const signOut = () => {
+    console.log("sign out");
+  };
 
   return (
     <>
@@ -42,17 +50,20 @@ function Navbar() {
                 Add New
               </button>
             </Link>
-            <Link href={"/signin"}>
-              <button className="w-24 bg-[#102632] border-solid border-2 border-sky-500 rounded-md">
-                Sign In
+            {newUser ? (
+              <button
+                onClick={signOut}
+                className="w-24 bg-[#102632] border-solid border-2 border-sky-500 rounded-md"
+              >
+                Log Out
               </button>
-            </Link>
-            <button
-              onClick={signOut}
-              className="w-24 bg-[#102632] border-solid border-2 border-sky-500 rounded-md"
-            >
-              Log Out
-            </button>
+            ) : (
+              <Link href={"/signin"}>
+                <button className="w-24 bg-[#102632] border-solid border-2 border-sky-500 rounded-md">
+                  Sign In
+                </button>
+              </Link>
+            )}
 
             <Link href={"/about"}>
               <button className="w-24 bg-[#102632] border-solid border-2 border-sky-500 rounded-md">
