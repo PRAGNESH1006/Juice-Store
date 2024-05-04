@@ -19,13 +19,14 @@ function Navbar() {
     newsession();
   }, []);
 
-  const signOut = async () => {
+  const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.log(error);
     }
     console.log("signOut");
     setCurrentUser(null);
+    router.push("/");
   };
 
   const handleChange = (e) => {
