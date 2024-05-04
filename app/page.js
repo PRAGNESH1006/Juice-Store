@@ -34,7 +34,7 @@ export default function Home() {
       } = await supabase.auth.getUser();
       setCurrentUser(user);
       console.log(user);
-      console.log(user.id);
+      console.log(user?.id);
     };
     newsession();
   }, [orderBy]);
@@ -67,38 +67,19 @@ export default function Home() {
 
   return (
     <div className="flex items-center justify-center flex-col  gap-4 py-2 ">
-      <div className="flex justify-evenly gap-2 items-center">
-        <p>Order By:</p>
-        <button
-          onClick={() => setOrderBy("created_at")}
-          className={`${
-            orderBy === "created_at"
-              ? "px-2 py-2 bg-[#373d7d] hover:bg-[#373d7d] text-black rounded-lg h-10"
-              : "px-2 py-2 bg-[#8ea3a1] hover:bg-[#373d7d] text-black rounded-lg h-10"
-          }`}
+      <div className="order-controls">
+        <label htmlFor="order-select " className="self-center">
+          Order By:
+        </label>
+        <select
+          id="order-select"
+          value={orderBy}
+          onChange={(e) => setOrderBy(e.target.value)}
         >
-          Time Created
-        </button>
-        <button
-          onClick={() => setOrderBy("rating")}
-          className={`${
-            orderBy === "rating"
-              ? "px-2 py-2 bg-[#373d7d] hover:bg-[#373d7d] text-black rounded-lg h-10"
-              : "px-2 py-2 bg-[#8ea3a1] hover:bg-[#373d7d] text-black rounded-lg h-10"
-          }`}
-        >
-          Rating
-        </button>
-        <button
-          onClick={() => setOrderBy("title")}
-          className={`${
-            orderBy === "title"
-              ? "px-2 py-2 bg-[#373d7d] hover:bg-[#373d7d] text-black rounded-lg h-10"
-              : "px-2 py-2 bg-[#8ea3a1] hover:bg-[#373d7d] text-black rounded-lg h-10"
-          }`}
-        >
-          Title
-        </button>
+          <option value="created_at">Time Created</option>
+          <option value="rating">Rating</option>
+          <option value="title">Title</option>
+        </select>
       </div>
       {fetchError && <p>{fetchError}</p>}
       {smoothies && (
@@ -146,6 +127,23 @@ export default function Home() {
           </div>
         </div>
       )}
+      <style jsx>{`
+        .order-controls {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+        .order-controls label {
+          font-weight: bold;
+        }
+        #order-select {
+          background-color: #373d7d;
+          padding: 8px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+      `}</style>
     </div>
   );
 }

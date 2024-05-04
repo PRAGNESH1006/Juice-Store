@@ -11,138 +11,210 @@ export default function Dashboard() {
   const [orderBy, setOrderBy] = useState("created_at");
 
   useEffect(() => {
-    //fatching smppthies
     const fetchData = async () => {
-      const { data, error } = await supabase
-        .from("smoothies")
-        .select()
-        .order(orderBy, { ascending: false });
+      try {
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser();
+        if (userError) {
+          throw userError;
+        }
+        setCurrentUser(user);
 
-      if (error) {
-        setFetchError("could not fetch smoothies data");
-        console.log(error);
-        setSmoothies(false);
-      }
+        const { data: smoothieData, error: smoothieError } = await supabase
+          .from("smoothies")
+          .select()
+          .order(orderBy, { ascending: false });
 
-      if (data) {
-        setSmoothies(data);
+        if (smoothieError) {
+          throw smoothieError;
+        }
+
+        const userSmoothies = smoothieData.filter(
+          (item) => item.user_id === user?.id
+        );
+
+        setSmoothies(userSmoothies || []);
         setFetchError(null);
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+        setFetchError("Could not fetch smoothies data");
+        setSmoothies(null);
       }
     };
+
     fetchData();
-
-    const newsession = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setCurrentUser(user);
-    };
-
-    newsession();
   }, [orderBy]);
 
   return (
-    <div className="flex justify-center items-center my-2 flex-col">
-      <div className="flex justify-center items-center my-2 flex-col gap-2">
-        <p className="text-2xl">Profile</p>
-
-        <div className="flex justify-center items-center my-2 gap-1  flex-col">
-          <p>Profile Picture</p>
-          <img
-            src={currentUser?.user_metadata.avatar_url}
-            alt=""
-            className="rounded-[50%]"
-          />
+    <div className="dashboard">
+      <div className="profile">
+        <p className="profile-heading">Profile</p>
+        <div className="profile-details">
+          <div className="profile-picture">
+            <img
+              src={currentUser?.user_metadata.avatar_url}
+              alt=""
+              className="rounded-[50%]"
+            />
+          </div>
+          <div className="profile-info">
+            <p>Name: {currentUser?.user_metadata.name}</p>
+            <p>User Id: {currentUser?.email}</p>
+          </div>
         </div>
-        <p>
-          <span>Name:{currentUser?.user_metadata.name}</span>
-        </p>
-        <p>
-          <span>User Id:{currentUser?.email}</span>
-        </p>
       </div>
-      <div className="h-1 bg-[pink] w-full"> </div>
-      <div className="flex items-center justify-center flex-col  gap-4 py-2 ">
-        <div className="flex justify-evenly gap-2 items-center">
-          <p>Order By:</p>
-          <button
-            onClick={() => setOrderBy("created_at")}
-            className={`${
-              orderBy === "created_at"
-                ? "px-2 py-2 bg-[#373d7d] hover:bg-[#373d7d] text-black rounded-lg h-10"
-                : "px-2 py-2 bg-[#8ea3a1] hover:bg-[#373d7d] text-black rounded-lg h-10"
-            }`}
+      <hr className="separator" />
+      <div className="smoothies">
+        <div className="order-controls">
+          <label htmlFor="order-select " className="self-center">
+            Order By:
+          </label>
+          <select
+            id="order-select"
+            value={orderBy}
+            onChange={(e) => setOrderBy(e.target.value)}
           >
-            Time Created
-          </button>
-          <button
-            onClick={() => setOrderBy("rating")}
-            className={`${
-              orderBy === "rating"
-                ? "px-2 py-2 bg-[#373d7d] hover:bg-[#373d7d] text-black rounded-lg h-10"
-                : "px-2 py-2 bg-[#8ea3a1] hover:bg-[#373d7d] text-black rounded-lg h-10"
-            }`}
-          >
-            Rating
-          </button>
-          <button
-            onClick={() => setOrderBy("title")}
-            className={`${
-              orderBy === "title"
-                ? "px-2 py-2 bg-[#373d7d] hover:bg-[#373d7d] text-black rounded-lg h-10"
-                : "px-2 py-2 bg-[#8ea3a1] hover:bg-[#373d7d] text-black rounded-lg h-10"
-            }`}
-          >
-            Title
-          </button>
+            <option value="created_at">Time Created</option>
+            <option value="rating">Rating</option>
+            <option value="title">Title</option>
+          </select>
         </div>
         {fetchError && <p>{fetchError}</p>}
         {smoothies && (
-          <div className=" mx-10 ">
-            <div className=" grid grid-cols-3 gap-[40px] py-4 px-8">
-              {smoothies.map((item) => (
-                <div
-                  key={item.id}
-                  className="h-[320px] text-[ffebf2] p-[10px] box-border rounded-lg relative gap-x-[20px] w-auto  bg-[#102632]  "
-                >
-                  <h2 className="text-[1.5rem] text-center w-full h-[50px] bg-[#92a9a7] text-[#201a0e] rounded-lg pt-2">
-                    {item.title}
-                  </h2>
-                  <div className="pt-2 px-2 h-[200px] overflow-auto ">
-                    <h3>
-                      <span className="text-[#6d15df]">Ingredients: </span>
-                      {item.ingredient}
-                    </h3>
-                    <h3>
-                      <span className="text-[#6d15df]">Method: </span>
-                      {item.method}
-                    </h3>
-                  </div>
-
-                  <div className="flex justify-center items-center absolute top-[-10px] right-[-10px] bg-[#6d15df] rounded-[6px] w-[30px] h-0  text-center p-[20px]  ">
-                    {item.rating}
-                  </div>
-                  {item.user_id === currentUser?.id && (
-                    <div className="  px-2 my-2 flex justify-evenly  ">
-                      <Link href={`/update/${item.id}`}>
-                        <button className="rounded-xl w-24 h-10  bg-[#6d15df]">
-                          Update
-                        </button>
-                      </Link>
-                      <button
-                        className="rounded-xl w-24 h-10 bg-red-800"
-                        onClick={() => handleDelete(item.id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  )}
+          <div className="smoothie-list">
+            {smoothies.map((item) => (
+              <div key={item.id} className="smoothie-item">
+                <h2>{item.title}</h2>
+                <div className="smoothie-details">
+                  <h3 className="ingredient">
+                    <span className="text-[#6d15df]">Ingredients: </span>
+                    {item.ingredient}
+                  </h3>
+                  <h3>
+                    <span className="text-[#6d15df]">Method: </span>
+                    {item.method}
+                  </h3>
                 </div>
-              ))}
-            </div>
+                <div className="rating">{item.rating}</div>
+                {item.user_id === currentUser?.id && (
+                  <div className="button-group">
+                    <Link href={`/update/${item.id}`}>
+                      <button className="update-button bg-[#6d15df]">
+                        Update
+                      </button>
+                    </Link>
+                    <button className="delete-button bg-red-800">Delete</button>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>
+      <style jsx>{`
+        .dashboard {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 20px;
+        }
+        .profile {
+          width: 100%;
+        }
+        .profile-heading {
+          font-size: 24px;
+          margin-bottom: 10px;
+        }
+        .profile-details {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+        }
+        .profile-picture img {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+        }
+        .profile-info p {
+          margin: 0;
+        }
+        .separator {
+          width: 100%;
+          border: 1px solid #ccc;
+          margin: 20px 0;
+        }
+        .smoothies {
+          width: 60%;
+        }
+        .order-controls {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+        .order-controls label {
+          font-weight: bold;
+        }
+        #order-select {
+          background-color: #373d7d;
+          padding: 8px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        .smoothie-list {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 20px;
+        }
+        .smoothie-item {
+          background-color: #102632;
+          color: #ffebf2;
+          padding: 10px;
+          border-radius: 10px;
+          position: relative;
+        }
+        .smoothie-item h2 {
+          font-size: 1.5rem;
+          text-align: center;
+          margin-bottom: 10px;
+        }
+        .smoothie-details p {
+          margin: 0;
+        }
+        .rating {
+          position: absolute;
+          top: -10px;
+          right: -10px;
+          background-color: #6d15df;
+          border-radius: 6px;
+          padding: 10px;
+          color: white;
+          width: 30px;
+        }
+        .button-group {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 10px;
+        }
+        .update-button,
+        .delete-button {
+          padding: 5px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        @media screen and (max-width: 768px) {
+          .profile-details {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+          .profile-info p {
+            margin-top: 5px;
+          }
+        }
+      `}</style>
     </div>
   );
 }

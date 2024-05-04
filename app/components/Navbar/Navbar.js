@@ -84,7 +84,7 @@ function Navbar() {
         </div>
         {currentUser && (
           <div
-            className="flex justify-center items-center gap-2"
+            className="flex justify-center items-center gap-2 hover:cursor-pointer"
             onClick={getUSerData}
           >
             <p>{currentUser.user_metadata.name}</p>
