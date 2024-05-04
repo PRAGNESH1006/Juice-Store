@@ -85,6 +85,7 @@ function Page() {
         <label htmlFor="title">Title:</label>
         <input
           type="text"
+          placeholder="Add Title"
           id="title"
           value={title}
           onChange={(e) => {
@@ -96,12 +97,14 @@ function Page() {
         <textarea
           id="Ingredients"
           value={ingredient}
+          placeholder="ingredients used to create smoothie"
           onChange={(e) => setIngredient(e.target.value)}
           className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-16"
         />
         <label htmlFor="method">Method:</label>
         <textarea
           id="method"
+          placeholder="Discribe how to create "
           value={method}
           onChange={(e) => setMethod(e.target.value)}
           className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-16"

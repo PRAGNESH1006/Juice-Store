@@ -44,20 +44,19 @@ function Navbar() {
 
   return (
     <>
-      <nav className="flex justify-around items-center h-[50px] bg-slate-800 text-white ">
-        <Link href={"/"}>
-          <div className="text-2xl flex justify-evenly items-center mx-0">
-            <span>
-              {" "}
-              <img
-                alt="new"
-                src="https://media.tenor.com/5OtR9QMc2wEAAAAi/dancing-its-time-to-party.gif"
-                className="h-10"
-              />{" "}
-            </span>{" "}
-            Smoothie
-          </div>
-        </Link>
+      <nav className="flex justify-around items-center h-[50px] bg-slate-800 text-white hover:cursor-pointer ">
+        <div className="text-2xl flex justify-evenly items-center mx-0">
+          <span>
+            {" "}
+            <img
+              alt="new"
+              src="https://media.tenor.com/5OtR9QMc2wEAAAAi/dancing-its-time-to-party.gif"
+              className="h-10"
+            />{" "}
+          </span>{" "}
+          Smoothie
+        </div>
+
         <div className="text-base">
           <ul className="flex justify-between items-center gap-3">
             {currentUser ? (

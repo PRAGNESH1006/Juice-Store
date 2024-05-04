@@ -58,6 +58,7 @@ const Create = () => {
         <label htmlFor="title">Title:</label>
         <input
           type="text"
+          placeholder="Add Title"
           id="title"
           value={title}
           onChange={(e) => {
@@ -68,6 +69,7 @@ const Create = () => {
         <label htmlFor="method">Ingredients:</label>
         <textarea
           id="Ingredients"
+          placeholder="Ingredients use to make smoothie"
           value={ingredient}
           onChange={(e) => setIngredient(e.target.value)}
           className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-16"
@@ -76,10 +78,11 @@ const Create = () => {
         <textarea
           id="method"
           value={method}
+          placeholder="Discribe how to create "
           onChange={(e) => setMethod(e.target.value)}
           className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-16"
         />
-        <label htmlFor="rating">Ratting(0-10):</label>
+        <label htmlFor="rating">Ratting:</label>
         <input
           type="number"
           id="rating"
