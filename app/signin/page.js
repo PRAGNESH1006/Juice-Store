@@ -45,13 +45,13 @@ function LogIn() {
     },
   };
   return (
-    <div className=" com flex justify-center items-center  ">
+    <div className="bg-black p-4 rounded-lg w-[90%] shadow-lg">
       <Auth
-        appearance={{
-          theme: ThemeSupa,
-        }}
         supabaseClient={supabase}
-        providers={["google", "github", "discord"]}
+        appearance={{ theme: ThemeSupa }}
+        providers={["google", "discord", "github"]}
+        theme="dark"
+        className="fon"
       />
     </div>
   );

@@ -6,6 +6,7 @@ export default function Home() {
   const [fetchError, setFetchError] = useState(null);
   const [smoothies, setSmoothies] = useState(null);
   const [orderBy, setOrderBy] = useState("created_at");
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     //fatching smppthies
@@ -27,6 +28,15 @@ export default function Home() {
       }
     };
     fetchData();
+    const newsession = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setCurrentUser(user);
+      console.log(user);
+      console.log(user.id);
+    };
+    newsession();
   }, [orderBy]);
 
   // deleting smoothies
@@ -116,19 +126,21 @@ export default function Home() {
                 <div className="flex justify-center items-center absolute top-[-10px] right-[-10px] bg-[#6d15df] rounded-[6px] w-[30px] h-0  text-center p-[20px]  ">
                   {item.rating}
                 </div>
-                <div className="  px-2 my-2 flex justify-evenly  ">
-                  <Link href={`/update/${item.id}`}>
-                    <button className="rounded-xl w-24 h-10  bg-[#6d15df]">
-                      Update
+                {item.user_id === currentUser.id && (
+                  <div className="  px-2 my-2 flex justify-evenly  ">
+                    <Link href={`/update/${item.id}`}>
+                      <button className="rounded-xl w-24 h-10  bg-[#6d15df]">
+                        Update
+                      </button>
+                    </Link>
+                    <button
+                      className="rounded-xl w-24 h-10 bg-red-800"
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      Delete
                     </button>
-                  </Link>
-                  <button
-                    className="rounded-xl w-24 h-10 bg-red-800"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

@@ -6,22 +6,31 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 function Navbar() {
-  const [newUser, setNewUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const newsession = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      setNewUser(user);
+      setCurrentUser(user);
+      console.log(user);
+      console.log(user.id);
     };
     newsession();
   }, []);
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.log(error);
+    }
     console.log("signOut");
     setNewUser(null);
+  };
+
+  const getUSerData = () => {
+    window.location.href = "/dashboard";
   };
 
   return (
@@ -52,7 +61,7 @@ function Navbar() {
                 Add New
               </button>
             </Link>
-            {newUser ? (
+            {currentUser ? (
               <button
                 onClick={signOut}
                 className="w-24 bg-[#102632] border-solid border-2 border-sky-500 rounded-md"
@@ -74,6 +83,19 @@ function Navbar() {
             </Link>
           </ul>
         </div>
+        {currentUser && (
+          <div
+            className="flex justify-center items-center gap-2"
+            onClick={getUSerData}
+          >
+            <p>{currentUser.user_metadata.name}</p>
+            <img
+              src={currentUser.user_metadata.avatar_url}
+              className="h-10 w-10 rounded-[50%]"
+              alt="err"
+            />
+          </div>
+        )}
       </nav>
     </>
   );
