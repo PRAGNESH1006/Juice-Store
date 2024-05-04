@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import supabase from "./supabase/supabaseClient";
 import Link from "next/link";
+import Head from "next/head";
 export default function Home() {
   const [fetchError, setFetchError] = useState(null);
   const [smoothies, setSmoothies] = useState(null);
@@ -67,6 +68,11 @@ export default function Home() {
 
   return (
     <div className="flex items-center justify-center flex-col  gap-4 py-2 ">
+      <Head>
+        <title>Home | Smoothies</title>
+        <meta name="description" content="Your description here" />
+        {/* Add more metadata here */}
+      </Head>
       <div className="order-controls">
         <label htmlFor="order-select " className="self-center">
           Order By:
