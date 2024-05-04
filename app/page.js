@@ -126,7 +126,7 @@ export default function Home() {
                 <div className="flex justify-center items-center absolute top-[-10px] right-[-10px] bg-[#6d15df] rounded-[6px] w-[30px] h-0  text-center p-[20px]  ">
                   {item.rating}
                 </div>
-                {item.user_id === currentUser.id && (
+                {item.user_id === currentUser?.id && (
                   <div className="  px-2 my-2 flex justify-evenly  ">
                     <Link href={`/update/${item.id}`}>
                       <button className="rounded-xl w-24 h-10  bg-[#6d15df]">

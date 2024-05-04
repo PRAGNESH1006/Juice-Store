@@ -15,7 +15,6 @@ function Navbar() {
       } = await supabase.auth.getUser();
       setCurrentUser(user);
       console.log(user);
-      console.log(user.id);
     };
     newsession();
   }, []);
@@ -26,7 +25,7 @@ function Navbar() {
       console.log(error);
     }
     console.log("signOut");
-    setNewUser(null);
+    setCurrentUser(null);
   };
 
   const getUSerData = () => {
