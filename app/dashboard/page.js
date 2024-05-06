@@ -3,6 +3,17 @@ import React from "react";
 import { useEffect, useState } from "react";
 import supabase from "@/app/supabase/supabaseClient";
 import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function Dashboard() {
   const [fetchError, setFetchError] = useState(null);
@@ -47,6 +58,30 @@ export default function Dashboard() {
     fetchData();
   }, [orderBy]);
 
+  const handleDelete = async (id) => {
+    try {
+      const { data, error } = await supabase
+        .from("smoothies")
+        .delete()
+        .eq("id", id)
+        .select();
+
+      // for clearing smoothie from page
+      setSmoothies((smoothies) => {
+        return smoothies.filter((sm) => sm.id !== id);
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("User deleted successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Error deleting user:", error.message);
+      throw error;
+    }
+  };
   return (
     <div className="dashboard">
       <div className="profile">
@@ -105,7 +140,33 @@ export default function Dashboard() {
                         Update
                       </button>
                     </Link>
-                    <button className="delete-button bg-red-800">Delete</button>
+                    <button className="bg-red-500 update-button">
+                      <AlertDialog className="">
+                        <AlertDialogTrigger>Delete</AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete your account and remove your
+                              data from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => {
+                                handleDelete(item.id);
+                              }}
+                            >
+                              Continue
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </button>
                   </div>
                 )}
               </div>

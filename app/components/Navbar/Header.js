@@ -3,6 +3,7 @@ import supabase from "@/app/supabase/supabaseClient";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 function Navbar() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -44,7 +45,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="flex justify-around items-center h-[50px] bg-slate-800 text-white hover:cursor-pointer ">
+      <nav className=" flex justify-around items-center h-[50px] bg-slate-800 text-white hover:cursor-pointer ">
         <div className="text-2xl flex justify-evenly items-center mx-0">
           <span>
             {" "}
@@ -55,6 +56,9 @@ function Navbar() {
             />{" "}
           </span>{" "}
           Smoothie
+          <Button asChild>
+            <Link href="/">Home</Link>
+          </Button>
         </div>
 
         <div className="text-base">
@@ -81,11 +85,9 @@ function Navbar() {
                 </select>
               </div>
             ) : (
-              <Link href={"/signin"}>
-                <button className="w-24 bg-[#102632] border-solid border-2 border-sky-500 rounded-md">
-                  Sign In
-                </button>
-              </Link>
+              <Button asChild>
+                <Link href="/signin">Login</Link>
+              </Button>
             )}
           </ul>
         </div>
