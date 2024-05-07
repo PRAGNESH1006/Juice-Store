@@ -153,7 +153,7 @@ export default function Home() {
                   </div>
                 </CardContent>
                 <CardFooter className=" flex justify-center items-center gap-4">
-                  {currentUser.id === item.user_id && (
+                  {currentUser?.id === item.user_id && (
                     <>
                       {" "}
                       <Update item={item} />
