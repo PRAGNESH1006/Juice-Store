@@ -3,6 +3,37 @@ import { useEffect, useState } from "react";
 import supabase from "./supabase/supabaseClient";
 import Link from "next/link";
 import Head from "next/head";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import { Button } from "@/components/ui/button";
+import { Update } from "@/app/components/Update";
+
 export default function Home() {
   const [fetchError, setFetchError] = useState(null);
   const [smoothies, setSmoothies] = useState(null);
@@ -67,68 +98,96 @@ export default function Home() {
   };
 
   return (
-    <div className="flex items-center justify-center flex-col  gap-4 py-2 ">
-      <Head>
-        <title>Home | Smoothies</title>
-        <meta name="description" content="Your description here" />
-        {/* Add more metadata here */}
-      </Head>
-      <div className="order-controls">
-        <label htmlFor="order-select " className="self-center">
-          Order By:
-        </label>
-        <select
-          id="order-select"
-          value={orderBy}
-          onChange={(e) => setOrderBy(e.target.value)}
-        >
-          <option value="created_at">Time Created</option>
-          <option value="rating">Rating</option>
-          <option value="title">Title</option>
-        </select>
-      </div>
+    <main className="flex items-center justify-center flex-col my-2  gap-4 py-2 ">
+      <DropdownMenu className="bg-red">
+        <DropdownMenuTrigger>Short</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setOrderBy("created_at")}>
+            <span className="self-center">
+              {orderBy === "created_at" ? "•" : " "}
+            </span>
+            Time
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOrderBy("rating")}>
+            <span className="self-center">
+              {orderBy === "rating" ? "•" : " "}
+            </span>
+            Rating
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOrderBy("title")}>
+            <span className="self-center">
+              {orderBy === "title" ? "•" : " "}
+            </span>
+            Title
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
       {fetchError && <p>{fetchError}</p>}
       {smoothies && (
         <div className=" mx-10 ">
-          <div className=" grid grid-cols-3 gap-[40px] py-4 px-8">
+          <div className=" grid grid-cols-3 gap-8 py-4 px-8">
             {smoothies.map((item) => (
-              <div
+              <Card
                 key={item.id}
-                className="h-[320px] text-[ffebf2] p-[10px] box-border rounded-lg relative gap-x-[20px] w-auto  bg-[#102632]  "
+                className=" h-[320px] box-border rounded-lg relative"
               >
-                <h2 className="text-[1.5rem] text-center w-full h-[50px] bg-[#92a9a7] text-[#201a0e] rounded-lg pt-2">
-                  {item.title}
-                </h2>
-                <div className="pt-2 px-2 h-[200px] overflow-auto ">
-                  <h3>
-                    <span className="text-[#6d15df]">Ingredients: </span>
-                    {item.ingredient}
-                  </h3>
-                  <h3>
-                    <span className="text-[#6d15df]">Method: </span>
-                    {item.method}
-                  </h3>
-                </div>
-
-                <div className="flex justify-center items-center absolute top-[-10px] right-[-10px] bg-[#6d15df] rounded-[6px] w-[30px] h-0  text-center p-[20px]  ">
-                  {item.rating}
-                </div>
-                {item.user_id === currentUser?.id && (
-                  <div className="  px-2 my-2 flex justify-evenly  ">
-                    <Link href={`/update/${item.id}`}>
-                      <button className="rounded-xl w-24 h-10  bg-[#6d15df]">
-                        Update
-                      </button>
-                    </Link>
-                    <button
-                      className="rounded-xl w-24 h-10 bg-red-800"
-                      onClick={() => handleDelete(item.id)}
-                    >
-                      Delete
-                    </button>
+                <CardHeader>
+                  <CardTitle>{item.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className=" h-[200px] overflow-auto ">
+                    <h3>
+                      <span className="text-[#6d15df]">Ingredients: </span>
+                      {item.ingredient}
+                    </h3>
+                    <h3>
+                      <span className="text-[#6d15df]">Method: </span>
+                      {item.method}
+                    </h3>
                   </div>
-                )}
-              </div>
+
+                  <div className="flex text-white justify-center items-center absolute top-[-10px] right-[-10px] bg-[#6d15df] rounded-[6px] w-[30px] h-0  text-center p-[20px]  ">
+                    {item.rating}
+                  </div>
+                </CardContent>
+                <CardFooter className=" flex justify-center items-center gap-4">
+                  {currentUser.id === item.user_id && (
+                    <>
+                      {" "}
+                      <Update item={item} />
+                      <Button variant="destructive">
+                        <AlertDialog className="">
+                          <AlertDialogTrigger>Delete</AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Are you absolutely sure?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will
+                                permanently delete your account and remove your
+                                data from our servers.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => {
+                                  handleDelete(item.id);
+                                }}
+                              >
+                                Continue
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </Button>{" "}
+                    </>
+                  )}
+                </CardFooter>
+              </Card>
             ))}
           </div>
         </div>
@@ -150,6 +209,6 @@ export default function Home() {
           cursor: pointer;
         }
       `}</style>
-    </div>
+    </main>
   );
 }
