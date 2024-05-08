@@ -99,30 +99,31 @@ export default function Home() {
 
   return (
     <main className="flex items-center justify-center flex-col my-2  gap-4 py-2 ">
-      <DropdownMenu className="bg-red">
-        <DropdownMenuTrigger>Short</DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setOrderBy("created_at")}>
-            <span className="self-center">
-              {orderBy === "created_at" ? "•" : " "}
-            </span>
-            Time
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOrderBy("rating")}>
-            <span className="self-center">
-              {orderBy === "rating" ? "•" : " "}
-            </span>
-            Rating
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOrderBy("title")}>
-            <span className="self-center">
-              {orderBy === "title" ? "•" : " "}
-            </span>
-            Title
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="bg-[#16a34a] text-white px-4 py-2 rounded-sm">
+        <DropdownMenu>
+          <DropdownMenuTrigger>Short</DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => setOrderBy("created_at")}>
+              <span className="self-center">
+                {orderBy === "created_at" ? "•" : " "}
+              </span>
+              Time
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setOrderBy("rating")}>
+              <span className="self-center">
+                {orderBy === "rating" ? "•" : " "}
+              </span>
+              Rating
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setOrderBy("title")}>
+              <span className="self-center">
+                {orderBy === "title" ? "•" : " "}
+              </span>
+              Title
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       {fetchError && <p>{fetchError}</p>}
       {smoothies && (
@@ -157,8 +158,8 @@ export default function Home() {
                     <>
                       {" "}
                       <Update item={item} />
-                      <Button variant="destructive">
-                        <AlertDialog className="">
+                      <div className="bg-[#16a34a]  text-white px-4 py-2 rounded-md">
+                        <AlertDialog>
                           <AlertDialogTrigger>Delete</AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
@@ -183,7 +184,7 @@ export default function Home() {
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
-                      </Button>{" "}
+                      </div>{" "}
                     </>
                   )}
                 </CardFooter>

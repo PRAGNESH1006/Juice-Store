@@ -59,20 +59,7 @@ function Navbar() {
     setCurrentUser(null);
     router.push("/");
   };
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-    if (value === "home") {
-      router.push("/");
-    } else if (value === "dashboard") {
-      router.push("/dashboard");
-    } else if (value === "addItem") {
-      router.push("/create");
-    } else if (value === "signOut") {
-      handleSignOut();
-    }
-  };
-
+  console.log(currentUser);
   return (
     <>
       <nav className=" flex justify-around items-center h-[50px] bg-slate-300 text-black">
@@ -94,10 +81,12 @@ function Navbar() {
             {currentUser ? (
               <>
                 <DropdownMenu asChild>
+                  <span className=" text-foreground">
+                    {currentUser?.user_metadata.name}
+                  </span>
                   <DropdownMenuTrigger>
-                    <span>{currentUser.name}</span>
                     <img
-                      src={currentUser.user_metadata.avatar_url}
+                      src={currentUser?.user_metadata.avatar_url}
                       className="h-10 w-10 rounded-[50%] bg-white"
                       alt="err"
                     />
