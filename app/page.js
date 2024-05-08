@@ -41,7 +41,6 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    //fatching smppthies
     const fetchData = async () => {
       const { data, error } = await supabase
         .from("smoothies")
@@ -49,7 +48,7 @@ export default function Home() {
         .order(orderBy, { ascending: false });
 
       if (error) {
-        setFetchError("could not fetch smoothies data");
+        setFetchError("Could not fetch smoothies data");
         console.log(error);
         setSmoothies(false);
       }
@@ -65,13 +64,10 @@ export default function Home() {
         data: { user },
       } = await supabase.auth.getUser();
       setCurrentUser(user);
-      console.log(user);
-      console.log(user?.id);
     };
     newsession();
   }, [orderBy]);
 
-  // deleting smoothies
   const handleDelete = async (id) => {
     try {
       const { data, error } = await supabase
@@ -80,7 +76,6 @@ export default function Home() {
         .eq("id", id)
         .select();
 
-      // for clearing smoothie from page
       setSmoothies((smoothies) => {
         return smoothies.filter((sm) => sm.id !== id);
       });
@@ -98,118 +93,98 @@ export default function Home() {
   };
 
   return (
-    <main className="flex items-center justify-center flex-col my-2  gap-4 py-2 ">
-      <div className="bg-[#16a34a] text-white px-4 py-2 rounded-sm">
-        <DropdownMenu>
-          <DropdownMenuTrigger>Short</DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => setOrderBy("created_at")}>
-              <span className="self-center">
-                {orderBy === "created_at" ? "•" : " "}
-              </span>
-              Time
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setOrderBy("rating")}>
-              <span className="self-center">
-                {orderBy === "rating" ? "•" : " "}
-              </span>
-              Rating
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setOrderBy("title")}>
-              <span className="self-center">
-                {orderBy === "title" ? "•" : " "}
-              </span>
-              Title
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+    <main className="flex flex-col items-center justify-center my-2 gap-4 py-2 mx-auto max-w-screen-lg">
+      <DropdownMenu>
+        <DropdownMenuTrigger className="bg-[#16a34a] text-white px-4 py-2 rounded-md">
+          Sort
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-green-300">
+          <DropdownMenuItem onClick={() => setOrderBy("created_at")}>
+            <span className="self-center">
+              {orderBy === "created_at" ? "•" : " "}
+            </span>
+            Time
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOrderBy("rating")}>
+            <span className="self-center">
+              {orderBy === "rating" ? "•" : " "}
+            </span>
+            Rating
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOrderBy("title")}>
+            <span className="self-center">
+              {orderBy === "title" ? "•" : " "}
+            </span>
+            Title
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {fetchError && <p>{fetchError}</p>}
       {smoothies && (
-        <div className=" mx-10 ">
-          <div className=" grid grid-cols-3 gap-8 py-4 px-8">
-            {smoothies.map((item) => (
-              <Card
-                key={item.id}
-                className=" h-[320px] box-border rounded-lg relative"
-              >
-                <CardHeader>
-                  <CardTitle>{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className=" h-[200px] overflow-auto ">
-                    <h3>
-                      <span className="text-[#6d15df]">Ingredients: </span>
-                      {item.ingredient}
-                    </h3>
-                    <h3>
-                      <span className="text-[#6d15df]">Method: </span>
-                      {item.method}
-                    </h3>
-                  </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 py-4 px-8">
+          {smoothies.map((item) => (
+            <Card
+              key={item.id}
+              className="h-[320px] box-border rounded-lg relative"
+            >
+              <CardHeader>
+                <CardTitle>{item.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[200px] overflow-auto flex flex-col gap-2">
+                  <h3>
+                    <span className="text-[#6d15df]">Ingredients: </span>
+                    {item.ingredient}
+                  </h3>
+                  <h3>
+                    <span className="text-[#6d15df]">Method: </span>
+                    {item.method}
+                  </h3>
+                </div>
 
-                  <div className="flex text-white justify-center items-center absolute top-[-10px] right-[-10px] bg-[#6d15df] rounded-[6px] w-[30px] h-0  text-center p-[20px]  ">
-                    {item.rating}
-                  </div>
-                </CardContent>
-                <CardFooter className=" flex justify-center items-center gap-4">
-                  {currentUser?.id === item.user_id && (
-                    <>
-                      {" "}
-                      <Update item={item} />
-                      <div className="bg-[#16a34a]  text-white px-4 py-2 rounded-md">
-                        <AlertDialog>
-                          <AlertDialogTrigger>Delete</AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                Are you absolutely sure?
-                              </AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete your account and remove your
-                                data from our servers.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => {
-                                  handleDelete(item.id);
-                                }}
-                              >
-                                Continue
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>{" "}
-                    </>
-                  )}
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+                <div className="flex text-white justify-center items-center absolute top-[-10px] right-[-10px] bg-[#6d15df] rounded-[6px] w-[30px] h-0 text-center p-[20px]">
+                  {item.rating}
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-center items-center gap-4">
+                {currentUser?.id === item.user_id && (
+                  <>
+                    <Update item={item} />
+                    <div className="bg-[#16a34a] text-white px-4 py-2 rounded-md">
+                      <AlertDialog>
+                        <AlertDialogTrigger>Delete</AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete your account and remove your
+                              data from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => {
+                                handleDelete(item.id);
+                              }}
+                            >
+                              Continue
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </>
+                )}
+              </CardFooter>
+            </Card>
+          ))}
         </div>
       )}
-      <style jsx>{`
-        .order-controls {
-          display: flex;
-          justify-content: center;
-          gap: 10px;
-          margin-bottom: 20px;
-        }
-        .order-controls label {
-          font-weight: bold;
-        }
-        #order-select {
-          background-color: #373d7d;
-          padding: 8px;
-          border-radius: 5px;
-          cursor: pointer;
-        }
-      `}</style>
     </main>
   );
 }

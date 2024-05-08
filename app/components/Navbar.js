@@ -26,7 +26,6 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuSub,
@@ -45,7 +44,6 @@ function Navbar() {
         data: { user },
       } = await supabase.auth.getUser();
       setCurrentUser(user);
-      console.log(user);
     };
     newsession();
   }, []);
@@ -55,90 +53,73 @@ function Navbar() {
     if (error) {
       console.log(error);
     }
-    console.log("signOut");
     setCurrentUser(null);
     router.push("/");
   };
-  console.log(currentUser);
+
   return (
     <>
-      <nav className=" flex justify-around items-center h-[50px] bg-slate-300 text-black">
+      <nav className="flex justify-between items-center h-[50px] bg-slate-300 text-black px-4">
         <Link href="/">
-          <div className="text-2xl flex justify-evenly items-center mx-0 hover:cursor-pointer ">
-            <span>
-              <img
-                alt="new"
-                src="https://media.tenor.com/5OtR9QMc2wEAAAAi/dancing-its-time-to-party.gif"
-                className="h-10"
-              />
-            </span>
-            Smoothie
+          <div className="text-2xl flex items-center hover:cursor-pointer">
+            <img
+              alt="logo"
+              src="https://media.tenor.com/5OtR9QMc2wEAAAAi/dancing-its-time-to-party.gif"
+              className="h-10"
+            />
+            <span>Smoothie</span>
           </div>
         </Link>
-
-        <div className="text-base">
-          <ul className="flex justify-between items-center gap-3">
-            {currentUser ? (
-              <>
-                <DropdownMenu asChild>
-                  <span className=" text-foreground">
-                    {currentUser?.user_metadata.name}
-                  </span>
-                  <DropdownMenuTrigger>
-                    <img
-                      src={currentUser?.user_metadata.avatar_url}
-                      className="h-10 w-10 rounded-[50%] bg-white"
-                      alt="err"
-                    />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 ">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          router.push("/dashboard");
-                        }}
-                      >
-                        <User className="mr-2 h-4 w-4 hover:cursor-pointer " />
-                        <span>Profile</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          router.push("/create");
-                        }}
-                      >
-                        <Plus className="mr-2 h-4 w-4 hover:cursor-pointer " />
-                        <span>Add New</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Github className="mr-2 h-4 w-4 hover:cursor-pointer " />
-                      <span>GitHub</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <LifeBuoy className="mr-2 h-4 w-4 hover:cursor-pointer " />
-                      <span>Support</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <LogOut
-                        className="mr-2 h-4 w-4 hover:cursor-pointer "
-                        onClick={handleSignOut}
-                      />
-                      <span>Log out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
-              <Button asChild>
-                <Link href="/signin">Login</Link>
-              </Button>
-            )}
-          </ul>
+        <div className="text-base flex items-center gap-4">
+          {currentUser ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <img
+                  src={currentUser?.user_metadata.avatar_url}
+                  className="h-10 w-10 rounded-[50%] bg-white"
+                  alt="avatar"
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>
+                  {currentUser?.user_metadata.name}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                    <User className="mr-2 h-4 w-4 hover:cursor-pointer" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/create")}>
+                    <Plus className="mr-2 h-4 w-4 hover:cursor-pointer" />
+                    <span>Add New</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Github className="mr-2 h-4 w-4 hover:cursor-pointer" />
+                  <span>GitHub</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <LifeBuoy className="mr-2 h-4 w-4 hover:cursor-pointer" />
+                  <span>Support</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4 hover:cursor-pointer" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button>
+              <Link href="/signin">Login</Link>
+            </Button>
+          )}
+          <Button onClick={() => router.push("/create")}>
+            <Plus className="mr-2 h-4 w-4 hover:cursor-pointer" />
+            <span>Add</span>
+          </Button>
         </div>
       </nav>
     </>

@@ -1,6 +1,18 @@
 "use client";
 import { useState } from "react";
 import supabase from "@/app/supabase/supabaseClient";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const Create = () => {
   const [title, setTitle] = useState("");
@@ -10,6 +22,7 @@ const Create = () => {
   const [formError, setFormError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,8 +46,8 @@ const Create = () => {
           },
         ])
         .select();
-      window.location.href = "/";
       setLoading(false);
+      router.push("/");
       setSuccessMessage("Successfully added smoothies");
     } catch (error) {
       setFormError(error.message);
@@ -50,63 +63,64 @@ const Create = () => {
   };
 
   return (
-    <div className=" flex flex-col  gap-2 justify-center items-center ">
-      <form
-        onSubmit={handleSubmit}
-        className="h-[70vh]   flex flex-col gap-2 justify-center  w-[400px] rounded-lg px-4  py-4 my-4  bg-[#102632] "
-      >
-        <label htmlFor="title">Title:</label>
-        <input
-          type="text"
-          placeholder="Add Title"
-          id="title"
-          value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
-          }}
-          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-8"
-        />
-        <label htmlFor="method">Ingredients:</label>
-        <textarea
-          id="Ingredients"
-          placeholder="Ingredients use to make smoothie"
-          value={ingredient}
-          onChange={(e) => setIngredient(e.target.value)}
-          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-16"
-        />
-        <label htmlFor="method">Method:</label>
-        <textarea
-          id="method"
-          value={method}
-          placeholder="Discribe how to create "
-          onChange={(e) => setMethod(e.target.value)}
-          className=" px-2 py-2 bg-[#92a9a7] text-black rounded-lg h-16"
-        />
-        <label htmlFor="rating">Ratting:</label>
-        <input
-          type="number"
-          id="rating"
-          value={rating}
-          max={10}
-          min={0}
-          onChange={handleChange}
-          placeholder="Enter a number up to 10"
-          className="bg-[#92a9a7] text-black rounded-lg h-8  text-center"
-        />
-        <button className="mx-auto px-2 bg-[#92a9a7] text-black rounded-lg h-8 ">
-          {loading ? "Loading..." : "Create Smoothie"}
-        </button>
-
-        {formError && (
-          <p style={{ textAlign: "center", marginTop: "5px" }}>{formError}</p>
-        )}
-        {successMessage && (
-          <p style={{ textAlign: "center", marginTop: "5px" }}>
-            {successMessage}
-          </p>
-        )}
-      </form>
-    </div>
+    <>
+      <Card className="w-full md:w-[350px] mx-auto mt-6">
+        <CardHeader>
+          <CardTitle>Create project</CardTitle>
+          <CardDescription>
+            Deploy your new project in one-click.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="ingredient">Ingredients</Label>
+                <Input
+                  id="ingredient"
+                  value={ingredient}
+                  onChange={(e) => setIngredient(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="method">Method</Label>
+                <Input
+                  id="method"
+                  value={method}
+                  onChange={(e) => setMethod(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="rating">Rating</Label>
+                <Input id="rating" value={rating} onChange={handleChange} />
+              </div>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter className="flex flex-col md:flex-row justify-between">
+          <Button variant="outline" onClick={() => router.push("/")}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} className="mt-2 md:mt-0">
+            {loading ? "Loading..." : "Create"}
+          </Button>
+          {formError && (
+            <p className="text-red-500 mt-2 text-center">{formError}</p>
+          )}
+          {successMessage && (
+            <p className="text-green-500 mt-2 text-center">{successMessage}</p>
+          )}
+        </CardFooter>
+      </Card>
+    </>
   );
 };
 
