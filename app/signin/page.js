@@ -45,15 +45,17 @@ function LogIn() {
     },
   };
   return (
-    <div className="flex justify-center items-center self-center mx-auto my-2 w-[40%]">
-      <div className=" bg-[#0d1c24] p-4 rounded-lg w-[90%] shadow-lg">
-        <Auth
-          supabaseClient={supabase}
-          appearance={{ theme: ThemeSupa }}
-          providers={["google", "discord", "github"]}
-          theme="dark"
-          className="fon"
-        />
+    <div className="flex justify-center items-center  my-2">
+      <div className="w-[90%] sm:w-[90%] md:w-[60%] lg:w-[50%] xl:w-[30%]">
+        <div className="bg-[#0d1c24] p-4 rounded-lg w-full shadow-lg">
+          <Auth
+            supabaseClient={supabase}
+            appearance={{ theme: ThemeSupa }}
+            providers={["google", "discord", "github"]}
+            theme="dark"
+            className="fon"
+          />
+        </div>
       </div>
     </div>
   );
