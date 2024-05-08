@@ -93,7 +93,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center my-2 gap-4 py-2 mx-auto max-w-screen-lg">
+    <main className="flex flex-col items-center justify-center my-2 gap-4 py-2 mx-auto max-w-screen-lg ">
       <DropdownMenu>
         <DropdownMenuTrigger className="bg-[#16a34a] text-white px-4 py-2 rounded-md">
           Sort
@@ -126,7 +126,7 @@ export default function Home() {
           {smoothies.map((item) => (
             <Card
               key={item.id}
-              className="h-[320px] box-border rounded-lg relative"
+              className="h-[320px] box-border rounded-lg relative  bg-white bg-opacity-75 shadow-md transition-shadow hover:shadow-2xl bg-gradient-to-b from-gray-400 to-blue-200 "
             >
               <CardHeader>
                 <CardTitle>{item.title}</CardTitle>

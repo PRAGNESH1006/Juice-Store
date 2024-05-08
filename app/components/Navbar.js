@@ -70,17 +70,17 @@ function Navbar() {
             <span>Smoothie</span>
           </div>
         </Link>
-        <div className="text-base flex items-center gap-4">
+        <div className="text-base flex items-center gap-4 ">
           {currentUser ? (
             <DropdownMenu>
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger className="transition-shadow hover:shadow-2xl ">
                 <img
                   src={currentUser?.user_metadata.avatar_url}
                   className="h-10 w-10 rounded-[50%] bg-white"
                   alt="avatar"
                 />
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent className="bg-gray-300 text-black">
                 <DropdownMenuLabel>
                   {currentUser?.user_metadata.name}
                 </DropdownMenuLabel>

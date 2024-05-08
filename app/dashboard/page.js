@@ -37,6 +37,7 @@ export default function Dashboard() {
   const [smoothies, setSmoothies] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [orderBy, setOrderBy] = useState("created_at");
+  const [newProfilePicture, setNewProfilePicture] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,28 +101,81 @@ export default function Dashboard() {
     }
   };
 
+  const handleProfilePictureUpload = async () => {
+    if (!newProfilePicture) return;
+
+    try {
+      const { data, error } = await supabase.storage
+        .from("profile-pictures")
+        .upload(`${currentUser.id}/profile-picture`, newProfilePicture, {
+          cacheControl: "3600",
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      const newProfilePictureUrl = data?.Key;
+
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({
+          avatar_url: newProfilePictureUrl,
+        })
+        .eq("id", currentUser.id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      // Update the user object with the new avatar URL
+      setCurrentUser((prevUser) => ({
+        ...prevUser,
+        user_metadata: {
+          ...prevUser.user_metadata,
+          avatar_url: newProfilePictureUrl,
+        },
+      }));
+
+      console.log("Profile picture updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile picture:", error.message);
+    }
+  };
+
+  const handleFileInputChange = (event) => {
+    const file = event.target.files[0];
+    setNewProfilePicture(file);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center my-2 gap-4 py-2 px-2 sm:px-4 lg:px-8">
+    <main className="flex flex-col items-center justify-center  gap-4 py-8 px-2 sm:px-4 lg:px-8 ">
       <div className="profile">
-        <p className="profile-heading">Profile</p>
-        <div className="profile-details flex flex-col sm:flex-row items-center">
-          <div className="profile-picture mr-0 sm:mr-4">
+        <p className="profile-heading text-3xl text-white">Profile</p>
+        <div className="profile-details flex flex-col sm:flex-row items-center bg-white bg-opacity-75 rounded-lg p-4">
+          <div className="profile-picture mr-0 sm:mr-4 border-4 border-blue-200 rounded-full overflow-hidden">
             <img
               src={currentUser?.user_metadata.avatar_url}
               alt=""
-              className="rounded-[50%]"
+              className="w-24 h-24 object-cover"
             />
           </div>
           <div className="profile-info text-center sm:text-left mt-2 sm:mt-0">
-            <p>Name: {currentUser?.user_metadata.name}</p>
-            <p>User Id: {currentUser?.email}</p>
+            <p className="text-lg text-blue-800">
+              Name: {currentUser?.user_metadata.name}
+            </p>
+            <p className="text-lg text-blue-800">
+              User Id: {currentUser?.email}
+            </p>
           </div>
         </div>
       </div>
-      <hr className="w-full border-gray-300" />
+      <hr className="w-full border-blue-300" />
       <DropdownMenu className="w-full sm:w-auto mt-4">
-        <DropdownMenuTrigger>Short</DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuTrigger className="bg-[#16a34a] text-white px-4 py-2 rounded-md">
+          Sort
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-green-300">
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOrderBy("created_at")}>
             <span className="self-center">
@@ -151,28 +205,32 @@ export default function Dashboard() {
             // info about smoothies
             <Card
               key={item.id}
-              className=" h-[320px] box-border rounded-lg relative"
+              className="h-[320px] box-border rounded-lg relative bg-white bg-opacity-75 shadow-md transition-shadow hover:shadow-2xl bg-gradient-to-b from-gray-400 to-blue-400 "
             >
               <CardHeader>
                 <CardTitle>{item.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className=" h-[200px] overflow-auto ">
-                  <h3>
-                    <span className="text-[#6d15df]">Ingredients: </span>
+                <div className="h-[200px] overflow-auto">
+                  <h3 className="text-lg text-gray-800">
+                    <span className="text-[#6d15df] font-semibold">
+                      Ingredients:{" "}
+                    </span>
                     {item.ingredient}
                   </h3>
-                  <h3>
-                    <span className="text-[#6d15df]">Method: </span>
+                  <h3 className="text-lg text-gray-800">
+                    <span className="text-[#6d15df] font-semibold">
+                      Method:{" "}
+                    </span>
                     {item.method}
                   </h3>
                 </div>
 
-                <div className="flex text-white justify-center items-center absolute top-[-10px] right-[-10px] bg-[#6d15df] rounded-[6px] w-[30px] h-0  text-center p-[20px]  ">
+                <div className="flex text-white justify-center items-center absolute top-[-10px] right-[-10px] bg-[#6d15df] rounded-[6px] w-[30px] h-0 text-center p-[20px]">
                   {item.rating}
                 </div>
               </CardContent>
-              <CardFooter className=" flex justify-center items-center gap-4">
+              <CardFooter className="flex justify-center items-center gap-4">
                 {currentUser.id === item.user_id && (
                   <>
                     {/* updates */}
@@ -212,6 +270,6 @@ export default function Dashboard() {
           ))}
         </div>
       )}
-    </div>
+    </main>
   );
 }

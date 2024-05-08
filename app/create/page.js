@@ -64,7 +64,7 @@ const Create = () => {
 
   return (
     <>
-      <Card className="w-full md:w-[350px] mx-auto mt-6">
+      <Card className="w-full md:w-[350px] mx-auto my-6">
         <CardHeader>
           <CardTitle>Create project</CardTitle>
           <CardDescription>

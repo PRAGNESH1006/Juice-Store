@@ -50,7 +50,7 @@ export function Update({ item }) {
   }, [item.id]);
 
   const handleSubmit = async () => {
-    if (!title.trim() || !method.trim() || !rating || !ingredient.trim()) {
+    if (!title.trim() || !method.trim() || !ingredient.trim()) {
       setFormError("Please fill all the fields");
       alert(formError);
       return;
@@ -83,13 +83,13 @@ export function Update({ item }) {
 
   const handleChange = (e) => {
     const inputValue = e.target.value;
-    if (!isNaN(inputValue) && Number(inputValue) <= 10) {
+    if (!isNaN(inputValue) && 0 < Number(inputValue) <= 10) {
       setRating(inputValue);
     }
   };
 
   return (
-    <Sheet>
+    <Sheet className="bg-gradient-to-b from-gray-400 to-blue-600  shadow-lg">
       <SheetTrigger asChild>
         <Button>Update</Button>
       </SheetTrigger>
