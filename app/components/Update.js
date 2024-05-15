@@ -16,6 +16,17 @@ import { Textarea } from "@/components/ui/textarea";
 import supabase from "@/app/supabase/supabaseClient";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function Update({ item }) {
   const [title, setTitle] = useState("");

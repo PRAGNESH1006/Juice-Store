@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import SmoothieInstructions from "../components/Home";
 
 const Create = () => {
   const [title, setTitle] = useState("");
@@ -64,12 +65,11 @@ const Create = () => {
 
   return (
     <>
+      <SmoothieInstructions />
       <Card className="w-full md:w-[350px] mx-auto my-6">
         <CardHeader>
-          <CardTitle>Create project</CardTitle>
-          <CardDescription>
-            Deploy your new project in one-click.
-          </CardDescription>
+          <CardTitle>Create smoothie</CardTitle>
+          <CardDescription>Add your new smoothie in one-click.</CardDescription>
         </CardHeader>
         <CardContent>
           <form>
