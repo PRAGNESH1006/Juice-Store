@@ -129,6 +129,9 @@ function Navbar() {
               <span>Add</span>
             </Button>
           )}
+          <Button>
+            <Link href={"/components/about"}>About</Link>
+          </Button>
         </div>
       </nav>
     </>

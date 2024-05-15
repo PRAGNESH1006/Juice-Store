@@ -1,9 +1,9 @@
 import React from "react";
 import "./SmoothieInstructions.css"; // Import CSS file for styling
 
-const Home = () => {
+const Page = () => {
   return (
-    <div className="smoothie-instructions-container">
+    <div className="smoothie-instructions-container flex justify-center items-center flex-col my-10">
       <h2>Welcome to our Smoothie App!</h2>
       <p>
         To add a smoothie, simply click on the &quot;Add Smoothie&quot; button
@@ -20,4 +20,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Page;

@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import Home from "../components/Home";
 
 const Create = () => {
   const [title, setTitle] = useState("");
@@ -65,7 +64,6 @@ const Create = () => {
 
   return (
     <>
-      <Home />
       <Card className="w-full md:w-[350px] mx-auto my-6">
         <CardHeader>
           <CardTitle>Create smoothie</CardTitle>
