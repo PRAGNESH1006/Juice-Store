@@ -1,0 +1,124 @@
+"use client";
+import { useState } from "react";
+import { supabase } from "./supabaseClient"; // Import your Supabase client
+import { Button, TextField, Avatar } from "@mui/material";
+import { PaperClipIcon } from "@heroicons/react/20/solid";
+
+export default function UserProfile() {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState(null);
+
+  const handleProfilePhotoChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const { data, error } = await supabase.storage
+        .from("profiles")
+        .upload(`public/${file.name}`, file);
+      if (error) {
+        console.error("Error uploading file:", error);
+      } else {
+        const { publicURL, error: urlError } = supabase.storage
+          .from("profiles")
+          .getPublicUrl(`public/${file.name}`);
+        if (urlError) {
+          console.error("Error getting file URL:", urlError);
+        } else {
+          await supabase.auth.updateUser({ data: { profile_photo: publicURL } });
+          setProfilePhoto(publicURL);
+        }
+      }
+    }
+  };
+
+  const handlePhoneNumberUpdate = async () => {
+    const { error } = await supabase.auth.updateUser({ data: { phone_number: phoneNumber } });
+    if (error) {
+      console.error("Error updating phone number:", error);
+    } else {
+      alert("Phone number updated successfully!");
+    }
+  };
+
+  const handleEmailUpdate = async () => {
+    const { error } = await supabase.auth.updateUser({ email });
+    if (error) {
+      console.error("Error updating email:", error);
+    } else {
+      alert("Email updated successfully!");
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    const { error } = await supabase.auth.api.resetPasswordForEmail(email);
+    if (error) {
+      console.error("Error resetting password:", error);
+    } else {
+      alert("Password reset email sent!");
+    }
+  };
+
+  const handlePasswordUpdate = async () => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      console.error("Error updating password:", error);
+    } else {
+      alert("Password updated successfully!");
+    }
+  };
+
+  return (
+    <div className="p-4 max-w-md mx-auto">
+      <div className="flex flex-col items-center">
+        <Avatar src={profilePhoto} sx={{ width: 80, height: 80 }} />
+        <input type="file" onChange={handleProfilePhotoChange} />
+      </div>
+      <div className="mt-4">
+        <TextField
+          label="Phone Number"
+          fullWidth
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+        />
+        <Button onClick={handlePhoneNumberUpdate} variant="contained" color="primary" className="mt-2">
+          Update Phone Number
+        </Button>
+      </div>
+      <div className="mt-4">
+        <TextField
+          label="Email Address"
+          fullWidth
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Button onClick={handleEmailUpdate} variant="contained" color="primary" className="mt-2">
+          Update Email
+        </Button>
+      </div>
+      <div className="mt-4">
+        <TextField
+          label="Current Password"
+          type="password"
+          fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <TextField
+          label="New Password"
+          type="password"
+          fullWidth
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        <Button onClick={handlePasswordUpdate} variant="contained" color="primary" className="mt-2">
+          Update Password
+        </Button>
+        <Button onClick={handlePasswordReset} variant="outlined" color="secondary" className="mt-2">
+          Reset Password
+        </Button>
+      </div>
+    </div>
+  );
+}

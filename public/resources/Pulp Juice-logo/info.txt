@@ -1,0 +1,14 @@
+
+Hope you enjoy your new logo, here are the people that
+made your beautiful logo happen :)
+font name: SedgwickAve-Regular
+font link: https://fonts.google.com/specimen/Sedgwick+Ave
+font author: Kevin Burke
+font author site: http://www.blastframe.com/
+
+
+icon designer: Xinh Studio
+icon designer link: /xinhstudio
+        
+{"bg":"#575046","icon":"#C66A5D","font":"#ffffff","slogan":"#ffffff"}
+      

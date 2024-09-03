@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
+import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -16,13 +16,6 @@ const RootLayout = ({ children }) => {
       const footer = document.querySelector("footer");
       const bodyHeight = body.offsetHeight;
       const windowHeight = window.innerHeight;
-      const footerHeight = footer.offsetHeight;
-
-      if (bodyHeight < windowHeight) {
-        footer.classList.add("sticky-footer");
-      } else {
-        footer.classList.remove("sticky-footer");
-      }
     };
 
     handleResize();
@@ -33,11 +26,10 @@ const RootLayout = ({ children }) => {
 
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} flex flex-col min-h-screen bg-gray-400 `}
-      >
+      <body className={`${inter.className} flex flex-col min-h-screen  `}>
         <div className="flex-grow">
-          <Navbar />
+          {/* <Navbar /> */}
+          <Nav />
           {children}
         </div>
         <Footer />
