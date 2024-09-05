@@ -2,8 +2,6 @@
 import { useState } from "react";
 import supabase from "@/app/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 export default function AddProduct() {
   // State to manage form input values
@@ -19,6 +17,10 @@ export default function AddProduct() {
   const [preview, setPreview] = useState("");
 
   // State for success and error messages
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // State to manage loading state
   const [loading, setLoading] = useState(false);
 
   // Hook to programmatically navigate
@@ -61,11 +63,10 @@ export default function AddProduct() {
           ...prevData,
           img: publicData.publicUrl,
         }));
-        toast.success("Image uploaded successfully!");
         setLoading(false);
       } else if (error) {
         console.log("File upload error:", error);
-        toast.error("Failed to upload image. Please try again.");
+        setErrorMessage("Failed to upload image. Please try again.");
         setLoading(false);
       }
     }
@@ -75,6 +76,8 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
 
     // Extract form data
     const { juicename, fruit, price, img, ml } = formData;
@@ -86,9 +89,9 @@ export default function AddProduct() {
 
     if (error) {
       console.error("Error inserting data:", error);
-      toast.error("Failed to add product. Please try again.");
+      setErrorMessage("Failed to add product. Please try again.");
     } else {
-      toast.success("Product added successfully!");
+      setSuccessMessage("Product added successfully!");
       router.push("/components/collection");
       setFormData({
         juicename: "",
@@ -103,19 +106,25 @@ export default function AddProduct() {
   };
 
   return (
-    <div className="container mx-auto max-w-lg p-6 bg-gray-50 shadow-lg rounded-lg my-10">
-      <h1 className="text-4xl font-extrabold mb-8 text-center text-indigo-700">
+    <div className="container mx-auto max-w-lg p-6 bg-white shadow-lg rounded-xl my-10">
+      <h1 className="text-4xl font-bold mb-8 text-center text-indigo-600">
         Add New Juice Product
       </h1>
+      {successMessage && (
+        <p className="text-green-600 text-center mb-4">{successMessage}</p>
+      )}
+      {errorMessage && (
+        <p className="text-red-600 text-center mb-4">{errorMessage}</p>
+      )}
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="flex flex-col items-center">
-          <label className="block text-sm font-medium text-gray-800">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
             Upload Image
           </label>
           <input
             type="file"
             accept="image/*"
-            className="block w-full text-sm text-gray-900 bg-gray-100 rounded-lg border border-gray-300 cursor-pointer focus:outline-none"
+            className="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer focus:outline-none"
             id="file_input"
             onChange={handleUpload}
           />
@@ -126,12 +135,12 @@ export default function AddProduct() {
             <img
               src={preview}
               alt="Preview"
-              className="w-full h-auto rounded-lg shadow-lg"
+              className="w-full h-auto rounded-lg shadow-sm"
             />
           </div>
         )}
         <div>
-          <label className="block text-sm font-medium text-gray-800">
+          <label className="block text-sm font-medium text-gray-700">
             Juice Name
           </label>
           <input
@@ -140,11 +149,11 @@ export default function AddProduct() {
             value={formData.juicename}
             onChange={handleChange}
             required
-            className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:border-indigo-600 focus:ring-indigo-600 sm:text-sm"
+            className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-800">
+          <label className="block text-sm font-medium text-gray-700">
             Fruit
           </label>
           <input
@@ -153,11 +162,11 @@ export default function AddProduct() {
             value={formData.fruit}
             onChange={handleChange}
             required
-            className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:border-indigo-600 focus:ring-indigo-600 sm:text-sm"
+            className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-800">
+          <label className="block text-sm font-medium text-gray-700">
             Price (₹)
           </label>
           <input
@@ -167,11 +176,11 @@ export default function AddProduct() {
             value={formData.price}
             onChange={handleChange}
             required
-            className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:border-indigo-600 focus:ring-indigo-600 sm:text-sm"
+            className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-800">
+          <label className="block text-sm font-medium text-gray-700">
             Milliliters (ml)
           </label>
           <input
@@ -181,7 +190,7 @@ export default function AddProduct() {
             value={formData.ml}
             onChange={handleChange}
             required
-            className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:border-indigo-600 focus:ring-indigo-600 sm:text-sm"
+            className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
 
@@ -189,14 +198,12 @@ export default function AddProduct() {
           <button
             type="submit"
             disabled={loading || !formData.img}
-            className="w-full inline-flex justify-center py-3 px-5 border border-transparent shadow-lg text-sm font-semibold rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full inline-flex justify-center py-3 px-5 border border-transparent shadow-lg text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {loading ? "Loading..." : "Add Product"}
           </button>
         </div>
       </form>
-
-      <ToastContainer />
     </div>
   );
 }

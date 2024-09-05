@@ -7,16 +7,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-  IconButton,
 } from "@mui/material";
-import { PhotoCamera } from "@mui/icons-material";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import supabase from "@/app/supabase/supabaseClient"; // Adjust the import path as needed
 
 export default function UserProfile() {
@@ -32,6 +23,7 @@ export default function UserProfile() {
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
 
   useEffect(() => {
+    // Fetch user session and profile information
     const fetchSession = async () => {
       const {
         data: { user },
@@ -47,39 +39,53 @@ export default function UserProfile() {
     fetchSession();
   }, []);
 
+  // Handle profile photo change
   const handleProfilePhotoChange = async (event) => {
     const file = event.target.files[0];
-    if (!file) return;
+    if (!file) {
+      console.error("No file selected");
+      return;
+    }
 
     setLoading(true);
     try {
+      // Upload the selected image to Supabase storage
       const { data, error: uploadError } = await supabase.storage
         .from("juice-images")
         .upload(`public/${file.name}`, file);
 
       if (uploadError) throw uploadError;
 
+      // Get the public URL of the uploaded image
       const { data: publicData } = supabase.storage
         .from("juice-images")
         .getPublicUrl(`public/${file.name}`);
 
       setProfilePhoto(publicData.publicUrl);
-      toast.success("Profile photo updated successfully!");
     } catch (err) {
       console.error("An unexpected error occurred:", err);
       setError("An error occurred while updating the profile photo.");
-      toast.error("Failed to update profile photo.");
     } finally {
       setLoading(false);
     }
   };
 
+  // Open the update profile dialog
   const handleUpdateDialogOpen = () => setOpenUpdateDialog(true);
+
+  // Close the update profile dialog
   const handleUpdateDialogClose = () => setOpenUpdateDialog(false);
 
+  // Handle profile updates (photo, phone number, email, and password)
   const handleProfileUpdate = async () => {
     setLoading(true);
     try {
+      // Update profile photo if changed
+      if (profilePhoto) {
+        // Handle photo upload logic if needed
+      }
+
+      // Update phone number if changed
       if (phoneNumber !== user?.user_metadata?.phone) {
         const { error: phoneError } = await supabase.auth.updateUser({
           user_metadata: { phone: phoneNumber },
@@ -87,6 +93,7 @@ export default function UserProfile() {
         if (phoneError) throw phoneError;
       }
 
+      // Update email if changed
       if (newEmail !== user?.email) {
         const { error: emailError } = await supabase.auth.updateUser({
           email: newEmail,
@@ -94,6 +101,7 @@ export default function UserProfile() {
         if (emailError) throw emailError;
       }
 
+      // Update password if provided
       if (newPassword) {
         const { error: passwordError } = await supabase.auth.updateUser({
           password: newPassword,
@@ -101,12 +109,11 @@ export default function UserProfile() {
         if (passwordError) throw passwordError;
       }
 
-      toast.success("Profile updated successfully!");
+      alert("Profile updated successfully!");
       handleUpdateDialogClose();
     } catch (err) {
       console.error("Error updating profile:", err);
       setError("Failed to update profile.");
-      toast.error("Failed to update profile.");
     } finally {
       setLoading(false);
     }
@@ -116,122 +123,26 @@ export default function UserProfile() {
 
   return (
     <div className="m-4">
-      <Typography
-        variant="h4"
-        gutterBottom
-        align="center"
-        sx={{ mb: 3, fontWeight: "bold" }}
-      >
-        User Profile
-      </Typography>
-      <Typography
-        variant="subtitle1"
-        align="center"
-        color="textSecondary"
-        paragraph
-        sx={{ mb: 4 }}
-      >
-        Personal details.
-      </Typography>
-      <Card sx={{ maxWidth: 600, margin: "auto", padding: 2, boxShadow: 3 }}>
-        <CardMedia
-          component="img"
-          height="200"
-          image={profilePhoto}
-          alt="Profile Photo"
-          sx={{ borderRadius: "50%", margin: "auto", width: 150, boxShadow: 2 }}
-        />
-        <CardContent>
-          <Grid container spacing={3} justifyContent="center">
-            <Grid item>
-              <IconButton
-                color="primary"
-                aria-label="upload picture"
-                component="label"
-                sx={{ border: "1px solid", borderRadius: "50%", padding: 1 }}
-              >
-                <input
-                  type="file"
-                  hidden
-                  onChange={handleProfilePhotoChange}
-                  disabled={loading}
-                />
-                <PhotoCamera />
-              </IconButton>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" fontWeight="bold">
-                Full Name
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                {user?.user_metadata?.full_name || "N/A"}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" fontWeight="bold">
-                Email Address
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                {user?.email || "N/A"}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" fontWeight="bold">
-                Phone Number
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                {phoneNumber || "N/A"}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" fontWeight="bold">
-                Joined Date
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                {user?.created_at || "N/A"}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" fontWeight="bold">
-                About
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                {user?.user_metadata?.bio || "N/A"}
-              </Typography>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-
-      <div className="text-center mt-6">
-        <Button
-          onClick={handleUpdateDialogOpen}
-          variant="contained"
-          color="primary"
-          sx={{ fontWeight: "bold" }}
-        >
-          Update Profile
-        </Button>
+      <div className="px-4 sm:px-0">
+        <h3 className="text-center text-base font-semibold leading-7 text-gray-900">
+          User Profile
+        </h3>
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+          Personal details and application.
+        </p>
       </div>
-
-      <Dialog
-        open={openUpdateDialog}
-        onClose={handleUpdateDialogClose}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>Update Profile</DialogTitle>
-        <DialogContent>
-          <div className="flex flex-col gap-2">
-            <div className="mb-4">
-              <Typography variant="h6" fontWeight="bold">
-                Update Profile Photo
-              </Typography>
+      <div className="mt-6 border-t border-gray-100">
+        <dl className="divide-y divide-gray-100">
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm font-medium leading-6 text-gray-900">
+              Profile Photo
+            </dt>
+            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               <div className="flex items-center">
                 <img
                   src={profilePhoto}
                   alt="Profile Photo"
-                  className="h-24 w-24 rounded-full object-cover shadow-md"
+                  className="h-24 w-24 rounded-full object-cover"
                 />
                 <input
                   type="file"
@@ -240,30 +151,116 @@ export default function UserProfile() {
                   className="ml-4"
                 />
               </div>
-            </div>
+            </dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm font-medium leading-6 text-gray-900">
+              Full Name
+            </dt>
+            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              {user?.user_metadata?.full_name || "N/A"}
+            </dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm font-medium leading-6 text-gray-900">
+              Email Address
+            </dt>
+            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              {user?.email || "N/A"}
+            </dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm font-medium leading-6 text-gray-900">
+              Phone Number
+            </dt>
+            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              {phoneNumber || "N/A"}
+            </dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm font-medium leading-6 text-gray-900">
+              Joined Date
+            </dt>
+            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              {user?.created_at || "N/A"}
+            </dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm font-medium leading-6 text-gray-900">
+              About
+            </dt>
+            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              {user?.user_metadata?.bio || "N/A"}
+            </dd>
+          </div>
+        </dl>
+      </div>
 
+      <div className="text-center mt-6">
+        <Button
+          onClick={handleUpdateDialogOpen}
+          variant="contained"
+          color="primary"
+        >
+          Update Profile
+        </Button>
+      </div>
+
+      {/* Update Profile Dialog */}
+      <Dialog
+        open={openUpdateDialog}
+        onClose={handleUpdateDialogClose}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Update Profile</DialogTitle>
+        <DialogContent>
+          {/* Profile Photo Update */}
+          <div className="mb-4">
+            <h5 className="text-base font-semibold leading-6 text-gray-900">
+              Update Profile Photo
+            </h5>
+            <div className="flex items-center">
+              <img
+                src={profilePhoto}
+                alt="Profile Photo"
+                className="h-24 w-24 rounded-full object-cover"
+              />
+              <input
+                type="file"
+                onChange={handleProfilePhotoChange}
+                disabled={loading}
+                className="ml-4"
+              />
+            </div>
+          </div>
+
+          {/* Phone Number Update */}
+          <div className="mb-4">
             <TextField
               label="Phone Number"
               fullWidth
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               disabled={loading}
-              className="mb-4 "
-              variant="outlined"
-              InputLabelProps={{ sx: { fontSize: "0.875rem" } }}
+              className="mt-2"
             />
+          </div>
 
+          {/* Email Update */}
+          <div className="mb-4">
             <TextField
               label="New Email"
               fullWidth
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
               disabled={loading}
-              className="mb-4"
-              variant="outlined"
-              InputLabelProps={{ sx: { fontSize: "0.875rem" } }}
+              className="mt-2"
             />
+          </div>
 
+          {/* Password Update */}
+          <div className="mb-4">
             <TextField
               label="Current Password"
               type="password"
@@ -271,11 +268,8 @@ export default function UserProfile() {
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               disabled={loading}
-              className="mb-4"
-              variant="outlined"
-              InputLabelProps={{ sx: { fontSize: "0.875rem" } }}
+              className="mt-2"
             />
-
             <TextField
               label="New Password"
               type="password"
@@ -283,9 +277,7 @@ export default function UserProfile() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               disabled={loading}
-              className="mb-4"
-              variant="outlined"
-              InputLabelProps={{ sx: { fontSize: "0.875rem" } }}
+              className="mt-2"
             />
           </div>
         </DialogContent>
@@ -295,7 +287,6 @@ export default function UserProfile() {
             variant="contained"
             color="primary"
             disabled={loading}
-            sx={{ fontWeight: "bold" }}
           >
             Update Profile
           </Button>
@@ -308,8 +299,6 @@ export default function UserProfile() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <ToastContainer />
     </div>
   );
 }

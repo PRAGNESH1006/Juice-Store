@@ -3,7 +3,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@headlessui/react";
 import supabase from "@/app/supabase/supabaseClient";
-
+import { Toaster, toast } from "react-hot-toast";
+import GoogleIcon from "@mui/icons-material/Google";
+import { FaDiscord } from "react-icons/fa";
 export default function SignIn() {
   const [isSignIn, setIsSignIn] = useState(true);
   const [email, setEmail] = useState("");
@@ -29,11 +31,14 @@ export default function SignIn() {
       });
       if (error) {
         setError(error.message);
+        toast.error(error.message);
       } else {
+        toast.success("Signed in successfully!");
         router.push("/"); // Redirect to home page
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -51,11 +56,14 @@ export default function SignIn() {
       });
       if (error) {
         setError(error.message);
+        toast.error(error.message);
       } else {
+        toast.success("Account created successfully!");
         setIsSignIn(true); // Switch to sign-in form after successful sign-up
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -68,11 +76,13 @@ export default function SignIn() {
       const { error } = await supabase.auth.resetPasswordForEmail(email);
       if (error) {
         setError(error.message);
+        toast.error(error.message);
       } else {
-        console.log("Password reset email sent");
+        toast.success("Password reset email sent!");
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -85,32 +95,35 @@ export default function SignIn() {
       const { error } = await supabase.auth.signInWithOAuth({ provider });
       if (error) {
         setError(error.message);
+        toast.error(error.message);
       } else {
+        toast.success("Signed in successfully!");
         router.push("/"); // Redirect to home page
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
+    <div className="flex min-h-full flex-1 flex-col justify-center px-6  py-1 lg:px-8 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
       <img
         alt="Your Company"
         src="/resources/cover.png"
-        className="mx-auto h-10 w-auto rounded-xl"
+        className="mx-auto h-[50px] w-[100px] rounded-[10px] shadow-lg mb-2 animate-pulse"
       />
 
       {isSignIn ? (
         <>
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white rounded-lg p-2 shadow-md">
+            <h2 className=" text-center text-xl font-bold leading-9 tracking-tight text-gray-900">
               Sign in to your account
             </h2>
           </div>
-          <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-sm">
+          <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm bg-white rounded-lg p-6 shadow-md">
             <form onSubmit={handleSignIn} className="space-y-4">
               <div>
                 <label
@@ -168,8 +181,10 @@ export default function SignIn() {
               <div>
                 <button
                   type="submit"
-                  className={`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
-                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  className={`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition ease-in-out duration-150 transform ${
+                    loading
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:scale-105"
                   }`}
                   disabled={loading}
                 >
@@ -182,23 +197,27 @@ export default function SignIn() {
               <p className="mt-2 text-center text-sm text-red-500">{error}</p>
             )}
 
-            <div className="mt-6">
+            <div className="mt-6 flex justify-center space-x-4">
               <button
                 onClick={() => handleOAuthSignIn("google")}
-                className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 text-white shadow-sm hover:bg-red-500 focus:outline-none transition ease-in-out duration-150 transform hover:scale-105"
+                aria-label="Sign in with Google"
               >
-                Sign in with Google
+                <span className="sr-only">Sign in with Google</span>
+                <GoogleIcon />
               </button>
               <button
                 onClick={() => handleOAuthSignIn("discord")}
-                className="mt-4 flex w-full justify-center rounded-md bg-gray-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-800"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white shadow-sm hover:bg-gray-700 focus:outline-none transition ease-in-out duration-150 transform hover:scale-105"
+                aria-label="Sign in with Discord"
               >
-                Sign in with Discord
+                <span className="sr-only">Sign in with Discord</span>
+                <FaDiscord />
               </button>
             </div>
 
             <p className="mt-2 text-center text-sm text-gray-500">
-              Not a member?{" "}
+              Dont have an account?{" "}
               <Button
                 onClick={toggleForm}
                 className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
@@ -210,12 +229,12 @@ export default function SignIn() {
         </>
       ) : (
         <>
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white rounded-lg p-2 shadow-md">
+            <h2 className=" text-center text-xl font-bold leading-9 tracking-tight text-gray-900">
               Create your account
             </h2>
           </div>
-          <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-sm">
+          <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm bg-white rounded-lg p-6 shadow-md">
             <form onSubmit={handleSignUp} className="space-y-4">
               <div>
                 <label
@@ -284,8 +303,10 @@ export default function SignIn() {
               <div>
                 <button
                   type="submit"
-                  className={`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
-                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  className={`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition ease-in-out duration-150 transform ${
+                    loading
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:scale-105"
                   }`}
                   disabled={loading}
                 >
@@ -298,23 +319,27 @@ export default function SignIn() {
               <p className="mt-2 text-center text-sm text-red-500">{error}</p>
             )}
 
-            <div className="mt-6">
+            <div className="mt-3 flex justify-center space-x-4">
               <button
                 onClick={() => handleOAuthSignIn("google")}
-                className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 text-white shadow-sm hover:bg-red-500 focus:outline-none transition ease-in-out duration-150 transform hover:scale-105"
+                aria-label="Sign up with Google"
               >
-                Sign up with Google
+                <span className="sr-only">Sign up with Google</span>
+                <GoogleIcon />
               </button>
               <button
                 onClick={() => handleOAuthSignIn("discord")}
-                className="mt-4 flex w-full justify-center rounded-md bg-gray-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-800"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white shadow-sm hover:bg-gray-700 focus:outline-none transition ease-in-out duration-150 transform hover:scale-105"
+                aria-label="Sign up with Discord"
               >
-                Sign up with Discord
+                <span className="sr-only">Sign up with Discord</span>
+                <FaDiscord />
               </button>
             </div>
 
             <p className="mt-2 text-center text-sm text-gray-500">
-              Already Have an Account?{" "}
+              Already have an account?{" "}
               <Button
                 onClick={toggleForm}
                 className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
